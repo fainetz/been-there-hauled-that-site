@@ -104,3 +104,16 @@ details p{margin:12px 0 0;color:var(--muted)}
 .impact-steps b{flex:none;display:grid;place-items:center;width:36px;height:36px;border-radius:50%;background:var(--orange);color:#fff}
 .strip{background:#16382a}
 @media (max-width:900px){.impact-inner{grid-template-columns:1fr;gap:28px}}
+
+/* Display typography */
+.hero-h1{font-size:clamp(2.8rem,7vw,5.6rem);font-weight:900;letter-spacing:-.03em;line-height:.98}
+.swap{position:relative;display:inline-grid;vertical-align:bottom}
+.swap-word{grid-area:1/1;font-style:italic;font-weight:700;color:var(--orange);opacity:0;transform:translateY(.35em);transition:opacity .45s ease,transform .45s ease;
+  background:linear-gradient(transparent 78%, rgba(217,130,43,.22) 78%);padding-right:.08em}
+.swap-word.is-on{opacity:1;transform:none}
+.lead em,.impact em,.give-item h3 em,.impact-steps em{font-family:Fraunces,serif;font-style:italic;color:var(--orange);font-weight:700}
+.big-num{font-family:Fraunces,serif;font-weight:900;font-size:clamp(4.5rem,11vw,8.5rem);line-height:.9;letter-spacing:-.04em;margin:0 0 .15em;color:#fff}
+.big-num span{color:#f2b26b;font-style:italic;font-weight:500;margin:0 .02em}
+.big-num sup{font-size:.42em;vertical-align:top;position:relative;top:.25em;color:#f2b26b}
+h2{letter-spacing:-.02em}
+@media (prefers-reduced-motion: reduce){.swap-word{transition:none}}
