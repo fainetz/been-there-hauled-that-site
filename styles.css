@@ -112,7 +112,7 @@ details p{margin:12px 0 0;color:var(--muted)}
   background:linear-gradient(transparent 78%, rgba(217,130,43,.22) 78%);padding-right:.08em}
 .swap-word.is-on{opacity:1;transform:none}
 .lead em,.impact em,.give-item h3 em,.impact-steps em{font-family:Fraunces,serif;font-style:italic;color:var(--orange);font-weight:700}
-.big-num{font-family:Fraunces,serif;font-weight:900;font-size:clamp(4.5rem,11vw,8.5rem);line-height:.9;letter-spacing:-.04em;margin:0 0 .15em;color:#fff}
+.impact .big-num{font-family:Fraunces,serif;font-weight:900;font-size:clamp(4.5rem,11vw,8.5rem);line-height:.9;letter-spacing:-.04em;margin:0 0 .15em;color:#fff}
 .big-num span{color:#f2b26b;font-style:italic;font-weight:500;margin:0 .02em}
 .big-num sup{font-size:.42em;vertical-align:top;position:relative;top:.25em;color:#f2b26b}
 h2{letter-spacing:-.02em}
