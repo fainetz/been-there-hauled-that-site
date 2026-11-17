@@ -17,7 +17,7 @@ Never type the name directly into `index.html` or a blog post. Edit `index.templ
 
 | Where | What to change | How | Status |
 |---|---|---|---|
-| Facebook page | Page name + bio | Page settings → Name (Facebook reviews name changes; may take a few days and limits how often) | Name: Been There, Hauled That. Bio still says **Richfield**, needs updating to Eagan & South Metro |
+| Facebook page | Page name + bio | Page settings → Name (Facebook reviews name changes; may take a few days and limits how often) | Name: Been There, Hauled That. Bio updated Nov 17, 2026: "Same-day junk removal in Eagan & the South Metro. 10-20% of every job helps a homeless shelter or a dog rescue, and you get a photo & video of who it helped." Location: Eagan. Website link not added yet |
 | MN Secretary of State | LLC legal name (now **Breathe & Getaway AI L.L.C.**) | Amendment to Articles of Organization, $55 online | Not renamed yet. Plan: rename when the first customer books |
 | Render | Service name / URL `been-there-hauled-that.onrender.com` | The onrender.com address can't be renamed; add a custom domain instead | Using onrender.com |
 | GitHub | Repo `fainetz/been-there-hauled-that-site` | Repo Settings → rename (Render follows it) | Optional |
