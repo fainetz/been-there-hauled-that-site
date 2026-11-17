@@ -6,5 +6,16 @@
   "facebook_url": "https://www.facebook.com/profile.php?id=61596381343566",
   "home_city": "Eagan",
   "area_label": "Eagan & South Metro",
-  "areas": ["Eagan", "Burnsville", "Apple Valley", "Lakeville", "Farmington", "Shakopee", "Edina"]
+  "areas": [
+    "Eagan",
+    "Burnsville",
+    "Apple Valley",
+    "Lakeville",
+    "Farmington",
+    "Shakopee",
+    "Edina"
+  ],
+  "phone_display": "(612) 735-5424",
+  "phone_tel": "+16127355424",
+  "email": "fzewdu98@gmail.com"
 }

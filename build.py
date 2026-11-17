@@ -13,6 +13,7 @@ FB = CFG["facebook_url"]
 DATE = "2026-11-17"
 AREAS = ", ".join(CFG["areas"][:-1]) + " and " + CFG["areas"][-1]
 NAME = CFG["name"]
+PHONE, PHONE_TEL, EMAIL = CFG["phone_display"], CFG["phone_tel"], CFG["email"]
 NAME_HTML = f'{CFG["name_part_1"]} <span>{CFG["name_part_2"]}</span>'
 
 POSTS = [
@@ -209,7 +210,7 @@ HEAD = """<!doctype html>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,500;1,9..144,700&family=Inter:wght@400;500;600;800&display=swap" rel="stylesheet">
 <script type="application/ld+json">{ld}</script>
-<link rel="stylesheet" href="/styles.css?v=13">
+<link rel="stylesheet" href="/styles.css?v=14">
 </head>
 <body>
 <header class="nav">
@@ -219,7 +220,7 @@ HEAD = """<!doctype html>
       <a href="/#services">Services</a>
       <a href="/#giving">Giving back</a>
       <a href="/blog/">Blog</a>
-      <a href="{fb}" class="btn btn-sm">Free quote</a>
+      <a href="tel:{tel}" class="btn btn-sm">Call {phone}</a>
     </nav>
   </div>
 </header>
@@ -234,7 +235,11 @@ FOOT = """
       <h2>Need junk removal in the South Metro?</h2>
       <p class="lead">Message us a photo for a free quote. Same-day removal available. Every job helps a person <em>or</em> a dog, and you'll get a photo and video of who.</p>
     </div>
-    <a class="btn btn-light" href="{fb}" target="_blank" rel="noopener">Message us on Facebook</a>
+    <div class="quote-btns">
+      <a class="btn btn-light" href="sms:{tel}">Text us a photo</a>
+      <a class="btn btn-outline-light" href="tel:{tel}">Call {phone}</a>
+      <a class="btn btn-outline-light" href="mailto:{email}">Email us</a>
+    </div>
   </div>
 </section>
 <footer class="foot">
@@ -242,6 +247,7 @@ FOOT = """
     <p class="brand">__NAME_HTML__</p>
     <p>Junk removal · Eagan & the South Metro</p>
     <p class="small">Serving {areas}.</p>
+    <p class="small"><a href="tel:{tel}">{phone}</a> · <a href="mailto:{email}">{email}</a></p>
     <p class="small"><a href="/">Home</a> · <a href="/blog/">Blog</a> · <a href="{fb}">Facebook</a></p>
   </div>
 </footer>
@@ -249,11 +255,11 @@ FOOT = """
 </html>
 """
 
-BIZ = {"@type": "LocalBusiness", "@id": SITE + "/#business", "name": "__NAME__", "url": SITE + "/"}
+BIZ = {"@type": "LocalBusiness", "@id": SITE + "/#business", "name": "__NAME__", "url": SITE + "/", "telephone": PHONE_TEL, "email": EMAIL}
 
 def page(title, desc, url, ld, body):
-    return HEAD.format(title=html.escape(title), desc=html.escape(desc), url=url, site=SITE, fb=FB,
-                       ld=json.dumps(ld)) + body + FOOT.format(fb=FB, areas=AREAS)
+    return HEAD.format(title=html.escape(title), desc=html.escape(desc), url=url, site=SITE, fb=FB, tel=PHONE_TEL, phone=PHONE,
+                       ld=json.dumps(ld)) + body + FOOT.format(fb=FB, areas=AREAS, tel=PHONE_TEL, phone=PHONE, email=EMAIL)
 
 def fill(text):
     return text.replace("__NAME_HTML__", NAME_HTML).replace("__NAME__", NAME)
@@ -261,7 +267,8 @@ def fill(text):
 def build_home():
     t = open("index.template.html").read()
     t = (t.replace("{{NAME_1}}", CFG["name_part_1"]).replace("{{NAME_2}}", CFG["name_part_2"])
-          .replace("{{NAME}}", NAME).replace("{{SITE}}", SITE).replace("{{FB}}", FB))
+          .replace("{{NAME}}", NAME).replace("{{SITE}}", SITE).replace("{{FB}}", FB)
+          .replace("{{PHONE_TEL}}", PHONE_TEL).replace("{{PHONE}}", PHONE).replace("{{EMAIL}}", EMAIL))
     open("index.html", "w").write(t)
 
 def build():
@@ -323,7 +330,7 @@ def build():
         "# __NAME__\n\n"
         "> Junk removal in Eagan and the South Metro of the Twin Cities, Minnesota. 10-20% of every job goes to one local homeless shelter or dog rescue, and customers get a photo and video of who their job helped.\n\n"
         f"- Service area: {AREAS}\n- Services: furniture, appliances, garage and basement cleanouts, estate and move-out cleanouts, yard debris, light construction debris\n"
-        f"- Quotes: free, up front, from a photo. Contact: {FB}\n- Payment: cash or payment app\n\n## Pages\n" +
+        f"- Quotes: free, up front, from a photo. Call/text: {PHONE} · Email: {EMAIL} · Facebook: {FB}\n- Payment: cash or payment app\n\n## Pages\n" +
         "".join(f"- [{p['title']}]({SITE}/blog/{p['slug']}/): {p['desc']}\n" for p in POSTS)))
 
 if __name__ == "__main__":
