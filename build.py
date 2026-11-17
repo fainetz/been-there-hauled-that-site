@@ -1,12 +1,52 @@
-"""Builds /blog/ pages from POSTS below. Run: python3 build_blog.py"""
+"""Builds the whole site: home page (index.template.html) + blog + sitemap + llms.txt.
+
+To rename the business: edit site_config.json, then run  python3 build.py  and push.
+Every page, schema tag and blog post picks up the new name. See NAME_TRACKER.md for
+the places outside this repo (Facebook, LLC, Render) that need a manual rename.
+"""
 import json, os, html
 
-SITE = "https://been-there-hauled-that.onrender.com"
-FB = "https://www.facebook.com/profile.php?id=61596381343566"
+CFG = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "site_config.json")))
+
+SITE = CFG["site_url"]
+FB = CFG["facebook_url"]
 DATE = "2026-11-17"
-AREAS = "Eagan, Burnsville, Apple Valley, Lakeville, Farmington, Shakopee and Edina"
+AREAS = ", ".join(CFG["areas"][:-1]) + " and " + CFG["areas"][-1]
+NAME = CFG["name"]
+NAME_HTML = f'{CFG["name_part_1"]} <span>{CFG["name_part_2"]}</span>'
 
 POSTS = [
+{
+"slug": "same-day-junk-removal-south-metro",
+"title": "Same-Day Junk Removal in Eagan and the South Metro",
+"desc": "How same-day junk removal works in Eagan, Burnsville, Apple Valley, Lakeville and nearby: how to book it, what to have ready, and what it costs.",
+"answer": "Yes, same-day junk removal is available in Eagan and the South Metro when the schedule allows. Message a photo of what's going early in the day; you'll get an up-front price and, if a slot is open, the items can be gone the same day.",
+"body": """
+<h2>How to get same-day removal</h2>
+<ol>
+<li><b>Message us early</b> with a photo of the items and where they are (basement, garage, upstairs).</li>
+<li><b>Get your price</b> up front before anything is lifted.</li>
+<li><b>Pick a time</b> from the open slots that day.</li>
+<li><b>We load it and haul it</b>; you don't need to move anything to the curb.</li>
+</ol>
+
+<h2>When same-day helps most</h2>
+<ul>
+<li>Move-outs and closing dates</li>
+<li>Estate cleanouts after a sale</li>
+<li>Landlord turnovers between tenants</li>
+<li>A new couch or appliance arriving and the old one has to go</li>
+</ul>
+
+<h2>Does same-day cost more?</h2>
+<p>Pricing is based on how much you have and what it is. See <a href="/blog/junk-removal-cost-south-metro/">how much junk removal costs in the South Metro</a>.</p>
+
+<h2>Still gives back</h2>
+<p>Same-day jobs work like every other job: 10–20% goes to one local homeless shelter <em>or</em> dog rescue, and you get a photo and video of who it helped. We serve {areas}.</p>
+""",
+"faq": [("Can I get junk removed today in Eagan?", "Often, yes. Message a photo early in the day to check same-day availability."),
+        ("Do I need to be home for same-day junk removal?", "Not always. If items are outside or in an open garage and payment is arranged, pickup can often happen without you there.")],
+},
 {
 "slug": "junk-removal-cost-south-metro",
 "title": "How Much Does Junk Removal Cost in Eagan and the South Metro?",
@@ -32,7 +72,7 @@ POSTS = [
 </ul>
 
 <h2>How to get a quote</h2>
-<p>Message us a photo of what's going and where it is in the house. We'll give you a price before we lift anything. We serve {areas}.</p>
+<p>Message us a photo of what's going and where it is in the house. We'll give you a price before we lift anything, and <b>same-day removal</b> is often available if you message early. We serve {areas}.</p>
 
 <h2>Where your money goes</h2>
 <p>10–20% of every job goes to one local organization: a homeless shelter <em>or</em> a dog rescue. Afterward we text you a photo and video of who your job helped.</p>
@@ -56,7 +96,7 @@ POSTS = [
 <p>Listing it free on Facebook Marketplace or a neighborhood group can work, but you'll need to coordinate pickup and may get no-shows.</p>
 
 <h2>4. Book junk removal</h2>
-<p>We'll carry it out from anywhere in the house, so you don't have to move it to the curb. If it's donatable, we'll donate it.</p>
+<p>We'll carry it out from anywhere in the house, so you don't have to move it to the curb, often the same day you message us. If it's donatable, we'll donate it.</p>
 
 <h2>Where not to take it</h2>
 <p>Dakota County's <a href="https://dakotacountymn.gov/residents/recycling-waste/recycling-zone-locations/recycling-zone" rel="nofollow">Recycling Zone</a> in Eagan handles household hazardous waste and electronics, but does not take furniture or mattresses.</p>
@@ -143,7 +183,7 @@ POSTS = [
 <p>Paint, chemicals and medications need special disposal. See <a href="/blog/what-junk-removal-cant-take-dakota-county/">what junk removal can't take</a>.</p>
 
 <h2>3. Clear the rest in one visit</h2>
-<p>We carry out furniture, appliances and leftovers from every room, donate what's usable and leave the house ready for the next step.</p>
+<p>We carry out furniture, appliances and leftovers from every room, donate what's usable and leave the house ready for the next step. Tight closing date? Ask about same-day removal.</p>
 
 <h2>For estate sale companies</h2>
 <p>We work with estate sale companies and families across {areas}. Message us to set up cleanouts after your sales.</p>
@@ -169,12 +209,12 @@ HEAD = """<!doctype html>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,500;1,9..144,700&family=Inter:wght@400;500;600;800&display=swap" rel="stylesheet">
 <script type="application/ld+json">{ld}</script>
-<link rel="stylesheet" href="/styles.css?v=9">
+<link rel="stylesheet" href="/styles.css?v=10">
 </head>
 <body>
 <header class="nav">
   <div class="wrap nav-inner">
-    <a href="/" class="brand">Been There, <span>Hauled That</span><small>Junk Removal</small></a>
+    <a href="/" class="brand">__NAME_HTML__<small>Junk Removal</small></a>
     <nav>
       <a href="/#services">Services</a>
       <a href="/#giving">Giving back</a>
@@ -192,14 +232,14 @@ FOOT = """
   <div class="wrap quote-inner">
     <div>
       <h2>Need junk removal in the South Metro?</h2>
-      <p class="lead">Message us a photo for a free quote. Every job helps a person <em>or</em> a dog, and you'll get a photo and video of who.</p>
+      <p class="lead">Message us a photo for a free quote. Same-day removal available. Every job helps a person <em>or</em> a dog, and you'll get a photo and video of who.</p>
     </div>
     <a class="btn btn-light" href="{fb}" target="_blank" rel="noopener">Message us on Facebook</a>
   </div>
 </section>
 <footer class="foot">
   <div class="wrap foot-inner">
-    <p class="brand">Been There, <span>Hauled That</span></p>
+    <p class="brand">__NAME_HTML__</p>
     <p>Junk removal · Eagan & the South Metro</p>
     <p class="small">Serving {areas}.</p>
     <p class="small"><a href="/">Home</a> · <a href="/blog/">Blog</a> · <a href="{fb}">Facebook</a></p>
@@ -209,19 +249,29 @@ FOOT = """
 </html>
 """
 
-BIZ = {"@type": "LocalBusiness", "@id": SITE + "/#business", "name": "Been There, Hauled That", "url": SITE + "/"}
+BIZ = {"@type": "LocalBusiness", "@id": SITE + "/#business", "name": "__NAME__", "url": SITE + "/"}
 
 def page(title, desc, url, ld, body):
     return HEAD.format(title=html.escape(title), desc=html.escape(desc), url=url, site=SITE, fb=FB,
                        ld=json.dumps(ld)) + body + FOOT.format(fb=FB, areas=AREAS)
 
+def fill(text):
+    return text.replace("__NAME_HTML__", NAME_HTML).replace("__NAME__", NAME)
+
+def build_home():
+    t = open("index.template.html").read()
+    t = (t.replace("{{NAME_1}}", CFG["name_part_1"]).replace("{{NAME_2}}", CFG["name_part_2"])
+          .replace("{{NAME}}", NAME).replace("{{SITE}}", SITE).replace("{{FB}}", FB))
+    open("index.html", "w").write(t)
+
 def build():
+    build_home()
     for p in POSTS:
         url = f"{SITE}/blog/{p['slug']}/"
         ld = [
             {"@context": "https://schema.org", "@type": "BlogPosting", "headline": p["title"], "description": p["desc"],
              "datePublished": DATE, "dateModified": DATE, "mainEntityOfPage": url, "image": SITE + "/images/cover.jpg",
-             "author": {"@type": "Organization", "name": "Been There, Hauled That", "url": SITE + "/"}, "publisher": BIZ},
+             "author": {"@type": "Organization", "name": "__NAME__", "url": SITE + "/"}, "publisher": BIZ},
             {"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [
                 {"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": a}} for q, a in p["faq"]]},
             {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [
@@ -236,7 +286,7 @@ def build():
   <nav class="crumbs"><a href="/">Home</a> / <a href="/blog/">Blog</a></nav>
   <p class="kicker">Junk Removal <span>· South Metro</span></p>
   <h1>{html.escape(p['title'])}</h1>
-  <p class="meta">By Been There, Hauled That · <time datetime="{DATE}">November 17, 2026</time></p>
+  <p class="meta">By __NAME__ · <time datetime="{DATE}">November 17, 2026</time></p>
   <div class="answer"><b>Short answer:</b> {p['answer']}</div>
   {p['body'].format(areas=AREAS)}
   <h2>FAQ</h2>
@@ -246,10 +296,10 @@ def build():
 </article>
 """
         os.makedirs(f"blog/{p['slug']}", exist_ok=True)
-        open(f"blog/{p['slug']}/index.html", "w").write(page(p["title"] + " | Been There, Hauled That", p["desc"], url, ld, body))
+        open(f"blog/{p['slug']}/index.html", "w").write(fill(page(p["title"] + " | __NAME__", p["desc"], url, ld, body)))
 
     cards = "".join(f'<a class="post-card" href="/blog/{p["slug"]}/"><h2>{html.escape(p["title"])}</h2><p>{html.escape(p["desc"])}</p><span>Read →</span></a>' for p in POSTS)
-    ld = {"@context": "https://schema.org", "@type": "Blog", "name": "Been There, Hauled That Blog", "url": SITE + "/blog/", "publisher": BIZ,
+    ld = {"@context": "https://schema.org", "@type": "Blog", "name": "__NAME__ Blog", "url": SITE + "/blog/", "publisher": BIZ,
           "blogPost": [{"@type": "BlogPosting", "headline": p["title"], "url": f"{SITE}/blog/{p['slug']}/"} for p in POSTS]}
     body = f"""
 <section class="section">
@@ -262,19 +312,19 @@ def build():
 </section>
 """
     os.makedirs("blog", exist_ok=True)
-    open("blog/index.html", "w").write(page("Junk Removal Blog | Eagan & South Metro | Been There, Hauled That",
-        "Junk removal tips, prices and local disposal answers for Eagan, Burnsville, Apple Valley, Lakeville and the South Metro.", SITE + "/blog/", ld, body))
+    open("blog/index.html", "w").write(fill(page("Junk Removal Blog | Eagan & South Metro | __NAME__",
+        "Junk removal tips, prices and local disposal answers for Eagan, Burnsville, Apple Valley, Lakeville and the South Metro.", SITE + "/blog/", ld, body)))
 
     urls = [SITE + "/", SITE + "/blog/"] + [f"{SITE}/blog/{p['slug']}/" for p in POSTS]
     open("sitemap.xml", "w").write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
         "".join(f"  <url><loc>{u}</loc><lastmod>{DATE}</lastmod></url>\n" for u in urls) + "</urlset>\n")
     open("robots.txt", "w").write(f"User-agent: *\nAllow: /\n\nSitemap: {SITE}/sitemap.xml\n")
-    open("llms.txt", "w").write(
-        "# Been There, Hauled That\n\n"
+    open("llms.txt", "w").write(fill(
+        "# __NAME__\n\n"
         "> Junk removal in Eagan and the South Metro of the Twin Cities, Minnesota. 10-20% of every job goes to one local homeless shelter or dog rescue, and customers get a photo and video of who their job helped.\n\n"
         f"- Service area: {AREAS}\n- Services: furniture, appliances, garage and basement cleanouts, estate and move-out cleanouts, yard debris, light construction debris\n"
         f"- Quotes: free, up front, from a photo. Contact: {FB}\n- Payment: cash or payment app\n\n## Pages\n" +
-        "".join(f"- [{p['title']}]({SITE}/blog/{p['slug']}/): {p['desc']}\n" for p in POSTS))
+        "".join(f"- [{p['title']}]({SITE}/blog/{p['slug']}/): {p['desc']}\n" for p in POSTS)))
 
 if __name__ == "__main__":
     build()

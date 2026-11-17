@@ -38,7 +38,7 @@ p{margin:0 0 1em}
 .hero-art img{border-radius:var(--radius);box-shadow:0 20px 50px -20px rgba(31,77,54,.35)}
 
 .strip{background:var(--green);color:#fff}
-.strip-inner{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;padding:26px 20px}
+.strip-inner{display:grid;grid-template-columns:repeat(5,1fr);gap:20px;padding:26px 20px}
 .strip b{display:block;font-family:Fraunces,serif;font-size:1.1rem}
 .strip span{opacity:.8;font-size:.92rem}
 
@@ -147,3 +147,4 @@ details a{color:var(--green)}
 
 .kicker{white-space:nowrap}
 @media (max-width:480px){.kicker{white-space:normal}}
+@media (max-width:900px){.strip-inner{grid-template-columns:1fr 1fr}}
