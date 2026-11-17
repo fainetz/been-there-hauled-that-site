@@ -220,7 +220,7 @@ HEAD = """<!doctype html>
       <a href="/#services">Services</a>
       <a href="/#giving">Giving back</a>
       <a href="/blog/">Blog</a>
-      <a href="tel:{tel}" class="btn btn-sm">Call {phone}</a>
+      <a href="tel:{tel}" class="btn btn-sm">Contact us</a>
     </nav>
   </div>
 </header>
@@ -233,11 +233,11 @@ FOOT = """
   <div class="wrap quote-inner">
     <div>
       <h2>Need junk removal in the South Metro?</h2>
-      <p class="lead">Message us a photo for a free quote. Same-day removal available. Every job helps a person <em>or</em> a dog, and you'll get a photo and video of who.</p>
+      <p class="lead">Call or text {phone} for a free quote. Same-day removal available. Every job helps a person <em>or</em> a dog, and you'll get a photo and video of who.</p>
     </div>
     <div class="quote-btns">
-      <a class="btn btn-light" href="sms:{tel}">Text us a photo</a>
-      <a class="btn btn-outline-light" href="tel:{tel}">Call {phone}</a>
+      <a class="btn btn-light" href="tel:{tel}">Contact us</a>
+      <a class="btn btn-outline-light" href="sms:{tel}">Text us a photo</a>
       <a class="btn btn-outline-light" href="mailto:{email}">Email us</a>
     </div>
   </div>
