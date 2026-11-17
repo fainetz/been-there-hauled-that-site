@@ -148,3 +148,5 @@ details a{color:var(--green)}
 .kicker{white-space:nowrap}
 @media (max-width:480px){.kicker{white-space:normal}}
 @media (max-width:900px){.strip-inner{grid-template-columns:1fr 1fr}}
+/* give italic overhang (p tail, g loop) room so Safari doesn't clip it while animating */
+.swap-word{padding:0 .14em .22em .18em;margin:0 -.14em -.22em -.18em}
