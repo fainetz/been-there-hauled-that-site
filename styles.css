@@ -92,3 +92,15 @@ details p{margin:12px 0 0;color:var(--muted)}
 .see-it{margin-top:28px;background:var(--green);color:#fff;border-radius:var(--radius);padding:28px 32px}
 .see-it h3{color:#fff;font-size:1.4rem}
 .see-it p{margin:0;color:rgba(255,255,255,.88);max-width:760px}
+
+.eyebrow.light{color:#f2b26b}
+.impact{background:var(--green);color:#fff;padding:56px 0}
+.impact-inner{display:grid;grid-template-columns:1.2fr 1fr;gap:48px;align-items:center}
+.impact h2{color:#fff}
+.impact p{color:rgba(255,255,255,.9);font-size:1.1rem}
+.impact .small-print{font-size:.85rem;opacity:.7;margin:0}
+.impact-steps{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+.impact-steps li{display:flex;align-items:center;gap:16px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:14px;padding:16px 18px;font-weight:500}
+.impact-steps b{flex:none;display:grid;place-items:center;width:36px;height:36px;border-radius:50%;background:var(--orange);color:#fff}
+.strip{background:#16382a}
+@media (max-width:900px){.impact-inner{grid-template-columns:1fr;gap:28px}}
