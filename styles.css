@@ -88,3 +88,7 @@ details p{margin:12px 0 0;color:var(--muted)}
   .strip-inner{grid-template-columns:1fr}
   .brand{font-size:1.05rem}
 }
+
+.see-it{margin-top:28px;background:var(--green);color:#fff;border-radius:var(--radius);padding:28px 32px}
+.see-it h3{color:#fff;font-size:1.4rem}
+.see-it p{margin:0;color:rgba(255,255,255,.88);max-width:760px}
