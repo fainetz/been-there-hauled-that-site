@@ -150,3 +150,9 @@ details a{color:var(--green)}
 @media (max-width:900px){.strip-inner{grid-template-columns:1fr 1fr}}
 /* give italic overhang (p tail, g loop) room so Safari doesn't clip it while animating */
 .swap-word{padding:0 .14em .22em .18em;margin:0 -.14em -.22em -.18em}
+/* crisp slide swap: old word slides up & out, new word slides up into place */
+.swap{overflow:hidden;padding:0 .14em .22em .18em;margin:0 -.14em -.22em -.18em}
+.swap-word{opacity:1;transform:translateY(110%);transition:transform .38s cubic-bezier(.2,.8,.2,1)}
+.swap-word.is-on{transform:none}
+.swap-word.is-out{transform:translateY(-110%)}
+@media (prefers-reduced-motion: reduce){.swap-word{transition:none}}
