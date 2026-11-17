@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://been-there-hauled-that.onrender.com/sitemap.xml
