@@ -6,6 +6,7 @@ the places outside this repo (Facebook, LLC, Render) that need a manual rename.
 """
 import json, os, html
 
+INDEXNOW_KEY = "63b214ba1506a151b641df80ffdd5573"  # key file 63b214ba1506a151b641df80ffdd5573.txt at site root; ping with: python3 build.py --ping
 CFG = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "site_config.json")))
 
 SITE = CFG["site_url"]
@@ -209,8 +210,8 @@ HEAD = """<!doctype html>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,500;1,9..144,700&family=Inter:wght@400;500;600;800&display=swap" rel="stylesheet">
-<script type="application/ld+json">{ld}</script>
-<link rel="stylesheet" href="/styles.css?v=15">
+{ld}
+<link rel="stylesheet" href="/styles.css?v=16">
 </head>
 <body>
 <header class="nav">
@@ -220,6 +221,7 @@ HEAD = """<!doctype html>
       <a href="/#services">Services</a>
       <a href="/#giving">Giving back</a>
       <a href="/blog/">Blog</a>
+      <a href="/about/">About</a>
       <a href="tel:{tel}" class="btn btn-sm">Contact us</a>
     </nav>
   </div>
@@ -248,7 +250,7 @@ FOOT = """
     <p>Junk removal · Eagan & the South Metro</p>
     <p class="small">Serving {areas}.</p>
     <p class="small"><a href="tel:{tel}">{phone}</a> · <a href="mailto:{email}">{email}</a></p>
-    <p class="small"><a href="/">Home</a> · <a href="/blog/">Blog</a> · <a href="{fb}">Facebook</a></p>
+    <p class="small"><a href="/">Home</a> · <a href="/blog/">Blog</a> · <a href="/about/">About</a> · <a href="{fb}">Facebook</a></p>
   </div>
 </footer>
 <div class="callbar"><a class="btn" href="tel:{tel}">Call us</a><a class="btn btn-ghost" href="sms:{tel}">Text a photo</a></div>
@@ -256,11 +258,33 @@ FOOT = """
 </html>
 """
 
+from more_posts import NEW_POSTS, CITIES, city_page, D as more_D
+POSTS = POSTS + NEW_POSTS
+
 BIZ = {"@type": "LocalBusiness", "@id": SITE + "/#business", "name": "__NAME__", "url": SITE + "/", "telephone": PHONE_TEL, "email": EMAIL}
+BIZ_FULL = {"@context": "https://schema.org", "@type": ["LocalBusiness", "HomeAndConstructionBusiness"], "@id": SITE + "/#business", "name": "__NAME__",
+            "url": SITE + "/", "telephone": PHONE_TEL, "email": EMAIL, "image": SITE + "/images/cover.jpg", "sameAs": [FB],
+            "description": "Junk removal in Eagan and the South Metro of the Twin Cities. 10-20% of every job goes to a local homeless shelter or dog rescue.",
+            "address": {"@type": "PostalAddress", "addressLocality": CFG["home_city"], "addressRegion": "MN", "addressCountry": "US"},
+            "areaServed": [{"@type": "City", "name": a + ", MN"} for a in CFG["areas"]], "priceRange": "$$", "paymentAccepted": "Cash, payment apps"}
+OWNER = CFG.get("owner_name", "").strip()
+AUTHOR = ({"@type": "Person", "name": OWNER, "url": SITE + "/about/", "worksFor": {"@id": SITE + "/#business"}} if OWNER
+          else {"@type": "Organization", "name": "__NAME__", "url": SITE + "/about/"})
+BYLINE = (f'<a href="/about/">{html.escape(OWNER)}</a>, owner of __NAME__' if OWNER else '<a href="/about/">__NAME__</a>')
+
+def ld_tags(data):
+    # One <script> per schema object: Google reads arrays, but many AI-visibility scanners only read single objects.
+    items = data if isinstance(data, list) else [data]
+    return "\n".join('<script type="application/ld+json">' + json.dumps(i).replace("<", "\\u003c") + "</script>" for i in items if i)
+
+def nice(d):
+    import datetime
+    x = datetime.date.fromisoformat(d)
+    return x.strftime("%B ") + str(x.day) + x.strftime(", %Y")
 
 def page(title, desc, url, ld, body):
     return HEAD.format(title=html.escape(title), desc=html.escape(desc), url=url, site=SITE, fb=FB, tel=PHONE_TEL, phone=PHONE,
-                       ld=json.dumps(ld)) + body + FOOT.format(fb=FB, areas=AREAS, tel=PHONE_TEL, phone=PHONE, email=EMAIL)
+                       ld=ld_tags(ld)) + body + FOOT.format(fb=FB, areas=AREAS, tel=PHONE_TEL, phone=PHONE, email=EMAIL)
 
 def fill(text):
     return text.replace("__NAME_HTML__", NAME_HTML).replace("__NAME__", NAME)
@@ -272,14 +296,72 @@ def build_home():
           .replace("{{PHONE_TEL}}", PHONE_TEL).replace("{{PHONE}}", PHONE).replace("{{EMAIL}}", EMAIL))
     open("index.html", "w").write(t)
 
+EXTRA_URLS = []  # (url, lastmod) for standalone pages added below
+
+def build_about():
+    url = SITE + "/about/"
+    faq = [("Who owns __NAME__?", (f"{OWNER} owns and runs __NAME__, " if OWNER else "__NAME__ is ") + "a junk removal business based in Eagan, Minnesota."),
+           ("Where does __NAME__ work?", f"Junk removal across the South Metro of the Twin Cities: {AREAS}, plus nearby cities on request."),
+           ("How does __NAME__ give back?", "10-20% of every job goes to one local organization, a homeless shelter or a dog rescue, and the customer gets a photo and video of who it helped. Usable items are donated, and old towels and blankets go to dog shelters."),
+           ("How do I get a quote?", f"Call or text a photo to {PHONE}, or email {EMAIL}. Quotes are free and given before any work starts.")]
+    ld = [{"@context": "https://schema.org", "@type": "AboutPage", "url": url, "name": "About __NAME__", "about": {"@id": SITE + "/#business"}},
+          BIZ_FULL,
+          {"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [
+              {"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": a}} for q, a in faq]}]
+    who = (f"<p>__NAME__ is run by <b>{html.escape(OWNER)}</b>, who lives in the South Metro and does the hauling.</p>" if OWNER else "")
+    body = f"""
+<article class="post wrap narrow">
+  <nav class="crumbs"><a href="/">Home</a> / About</nav>
+  <p class="kicker">About <span>· Eagan & South Metro</span></p>
+  <h1>About __NAME__</h1>
+  <div class="answer">__NAME__ is a local junk removal business based in Eagan, Minnesota, serving {AREAS}. We haul furniture, appliances and cleanouts, donate what's usable, and send 10–20% of every job to a local homeless shelter <em>or</em> a dog rescue.</div>
+  {who}
+  <h2>Why we started</h2>
+  <p>Most junk removal ends at the landfill. We wanted every haul to do some good for the South Metro: a share of every job goes to people experiencing homelessness or to dogs waiting for homes, and you get a photo and video of who your job helped.</p>
+  <h2>What we haul</h2>
+  <p>Furniture, mattresses, appliances, garage and basement cleanouts, estate and move-out cleanouts, yard debris and light construction debris. We carry it out from anywhere in the house.</p>
+  <h2>How it works</h2>
+  <ol><li>Text a photo of what's going.</li><li>Get a price up front.</li><li>We load it and haul it, often the same day.</li><li>You get a photo and video of who your job helped.</li></ol>
+  <h2>Contact</h2>
+  <p>Call or text <a href="tel:{PHONE_TEL}">{PHONE}</a> · <a href="mailto:{EMAIL}">{EMAIL}</a> · <a href="{FB}">Facebook</a></p>
+  <h2>Questions people ask</h2>
+  {"".join(f"<h3>{html.escape(q)}</h3><p>{html.escape(a)}</p>" for q, a in faq)}
+</article>
+"""
+    os.makedirs("about", exist_ok=True)
+    open("about/index.html", "w").write(fill(page("About __NAME__ | Junk Removal in Eagan, MN", f"__NAME__ is a junk removal business in Eagan, MN serving {AREAS}. 10-20% of every job goes to a local homeless shelter or dog rescue.", url, ld, body)))
+
+def build_cities():
+    for c in CITIES:
+        url = f"{SITE}/{c['slug']}/"
+        answer, faq, body = city_page(c, AREAS, [o for o in CITIES if o is not c], POSTS)
+        body = body.replace("{BYLINE}", BYLINE).replace("{NICE}", nice(more_D)).replace("{TEL}", PHONE_TEL).replace("{PHONE}", PHONE)
+        biz = dict(BIZ_FULL, **{"@id": SITE + "/#business"})
+        ld = [{"@context": "https://schema.org", "@type": "Service", "serviceType": "Junk removal", "name": f"Junk removal in {c['city']}, MN",
+               "url": url, "provider": {"@id": SITE + "/#business"}, "areaServed": {"@type": "City", "name": c["city"] + ", MN"}},
+              biz,
+              {"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [
+                  {"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": a}} for q, a in faq]},
+              {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [
+                  {"@type": "ListItem", "position": 1, "name": "Home", "item": SITE + "/"},
+                  {"@type": "ListItem", "position": 2, "name": f"Junk removal in {c['city']}", "item": url}]}]
+        os.makedirs(c["slug"], exist_ok=True)
+        open(f"{c['slug']}/index.html", "w").write(fill(page(f"Junk Removal {c['city']}, MN: Prices & Same-Day Pickup | __NAME__",
+            f"Junk removal in {c['city']}, MN: typical prices, {c['city']}'s bulk pickup rules, where to drop things off, and same-day pickup. 10-20% of every job helps a local shelter or dog rescue.", url, ld, body)))
+        EXTRA_URLS.append((url, more_D))
+
 def build():
     build_home()
+    build_about()
+    build_cities()
     for p in POSTS:
         url = f"{SITE}/blog/{p['slug']}/"
+        pub, upd = p.get("date", DATE), p.get("updated", p.get("date", DATE))
         ld = [
             {"@context": "https://schema.org", "@type": "BlogPosting", "headline": p["title"], "description": p["desc"],
-             "datePublished": DATE, "dateModified": DATE, "mainEntityOfPage": url, "image": SITE + "/images/cover.jpg",
-             "author": {"@type": "Organization", "name": "__NAME__", "url": SITE + "/"}, "publisher": BIZ},
+             "datePublished": pub, "dateModified": upd, "mainEntityOfPage": url, "url": url, "image": SITE + "/images/cover.jpg",
+             "author": AUTHOR, "publisher": BIZ, "about": {"@id": SITE + "/#business"}},
+            BIZ_FULL,
             {"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [
                 {"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": a}} for q, a in p["faq"]]},
             {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [
@@ -287,18 +369,21 @@ def build():
                 {"@type": "ListItem", "position": 2, "name": "Blog", "item": SITE + "/blog/"},
                 {"@type": "ListItem", "position": 3, "name": p["title"], "item": url}]},
         ]
-        faq_html = "".join(f"<details><summary>{html.escape(q)}</summary><p>{html.escape(a)}</p></details>" for q, a in p["faq"])
+        # visible Q&A (not collapsed) so crawlers and AI read the same text as the FAQ schema
+        faq_html = "".join(f"<h3>{html.escape(q)}</h3><p>{html.escape(a)}</p>" for q, a in p["faq"])
+        sources_html = ("<h2>Sources</h2><ul class=\"sources\">" + "".join(f'<li><a href="{u}">{html.escape(t)}</a></li>' for t, u in p["sources"]) + "</ul>") if p.get("sources") else ""
         others = "".join(f'<li><a href="/blog/{o["slug"]}/">{html.escape(o["title"])}</a></li>' for o in POSTS if o is not p)
         body = f"""
 <article class="post wrap narrow">
   <nav class="crumbs"><a href="/">Home</a> / <a href="/blog/">Blog</a></nav>
   <p class="kicker">Junk Removal <span>· South Metro</span></p>
   <h1>{html.escape(p['title'])}</h1>
-  <p class="meta">By __NAME__ · <time datetime="{DATE}">November 17, 2026</time></p>
+  <p class="meta">By {BYLINE} · <time datetime="{upd}">{"Updated " if upd != pub else ""}{nice(upd)}</time></p>
   <div class="answer"><b>Short answer:</b> {p['answer']}</div>
   {p['body'].format(areas=AREAS)}
-  <h2>FAQ</h2>
+  <h2>Questions people ask</h2>
   {faq_html}
+  {sources_html}
   <h2>More from the blog</h2>
   <ul class="more">{others}</ul>
 </article>
@@ -323,17 +408,30 @@ def build():
     open("blog/index.html", "w").write(fill(page("Junk Removal Blog | Eagan & South Metro | __NAME__",
         "Junk removal tips, prices and local disposal answers for Eagan, Burnsville, Apple Valley, Lakeville and the South Metro.", SITE + "/blog/", ld, body)))
 
-    urls = [SITE + "/", SITE + "/blog/"] + [f"{SITE}/blog/{p['slug']}/" for p in POSTS]
+    newest = max(p.get("updated", p.get("date", DATE)) for p in POSTS)
+    urls = [(SITE + "/", newest), (SITE + "/blog/", newest), (SITE + "/about/", newest)] + [(f"{SITE}/blog/{p['slug']}/", p.get("updated", p.get("date", DATE))) for p in POSTS] + EXTRA_URLS
     open("sitemap.xml", "w").write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
-        "".join(f"  <url><loc>{u}</loc><lastmod>{DATE}</lastmod></url>\n" for u in urls) + "</urlset>\n")
-    open("robots.txt", "w").write(f"User-agent: *\nAllow: /\n\nSitemap: {SITE}/sitemap.xml\n")
+        "".join(f"  <url><loc>{u}</loc><lastmod>{m}</lastmod></url>\n" for u, m in urls) + "</urlset>\n")
+    bots = ["Googlebot", "Bingbot", "OAI-SearchBot", "ChatGPT-User", "GPTBot", "PerplexityBot", "ClaudeBot", "Claude-SearchBot", "Applebot", "Google-Extended"]
+    open("robots.txt", "w").write("".join(f"User-agent: {x}\nAllow: /\n\n" for x in bots) + f"User-agent: *\nAllow: /\n\nSitemap: {SITE}/sitemap.xml\n")
     open("llms.txt", "w").write(fill(
         "# __NAME__\n\n"
         "> Junk removal in Eagan and the South Metro of the Twin Cities, Minnesota. 10-20% of every job goes to one local homeless shelter or dog rescue, and customers get a photo and video of who their job helped.\n\n"
         f"- Service area: {AREAS}\n- Services: furniture, appliances, garage and basement cleanouts, estate and move-out cleanouts, yard debris, light construction debris\n"
         f"- Quotes: free, up front, from a photo. Call/text: {PHONE} · Email: {EMAIL} · Facebook: {FB}\n- Payment: cash or payment app\n\n## Pages\n" +
+        "".join(f"- [Junk removal in {c['city']}, MN]({SITE}/{c['slug']}/)\n" for c in CITIES) + f"- [About]({SITE}/about/)\n\n## Blog\n" +
         "".join(f"- [{p['title']}]({SITE}/blog/{p['slug']}/): {p['desc']}\n" for p in POSTS)))
 
+def ping():
+    import urllib.request
+    urls = [u for u, _ in [(SITE + "/", 0), (SITE + "/blog/", 0), (SITE + "/about/", 0)]] + [f"{SITE}/blog/{p['slug']}/" for p in POSTS] + [u for u, _ in EXTRA_URLS]
+    data = json.dumps({"host": SITE.split("//")[1], "key": INDEXNOW_KEY, "keyLocation": f"{SITE}/{INDEXNOW_KEY}.txt", "urlList": urls}).encode()
+    r = urllib.request.urlopen(urllib.request.Request("https://api.indexnow.org/indexnow", data=data, headers={"Content-Type": "application/json; charset=utf-8"}))
+    print("IndexNow:", r.status, len(urls), "urls")
+
 if __name__ == "__main__":
+    import sys
     build()
+    if "--ping" in sys.argv:
+        ping()
     print("built", len(POSTS), "posts")
