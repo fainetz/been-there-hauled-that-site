@@ -210,7 +210,7 @@ HEAD = """<!doctype html>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,500;1,9..144,700&family=Inter:wght@400;500;600;800&display=swap" rel="stylesheet">
 <script type="application/ld+json">{ld}</script>
-<link rel="stylesheet" href="/styles.css?v=14">
+<link rel="stylesheet" href="/styles.css?v=15">
 </head>
 <body>
 <header class="nav">
@@ -251,6 +251,7 @@ FOOT = """
     <p class="small"><a href="/">Home</a> · <a href="/blog/">Blog</a> · <a href="{fb}">Facebook</a></p>
   </div>
 </footer>
+<div class="callbar"><a class="btn" href="tel:{tel}">Call us</a><a class="btn btn-ghost" href="sms:{tel}">Text a photo</a></div>
 </body>
 </html>
 """

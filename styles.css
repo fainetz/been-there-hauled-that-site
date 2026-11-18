@@ -172,3 +172,65 @@ details a{color:var(--green)}
 .contact-lines a{color:#fff;text-decoration:none;border-bottom:1px solid rgba(255,255,255,.4)}
 .contact-lines span{margin:0 10px;opacity:.6}
 @media (max-width:900px){.quote-btns{justify-content:flex-start}}
+
+/* ===== Mobile polish ===== */
+.hero-art{margin:0}
+.nav .btn,.contact-lines a,.hero-phone a{white-space:nowrap}
+.callbar{display:none}
+@media (max-width:900px){
+  .hero-art img{width:100%}
+  .areas{padding:52px 0}
+}
+@media (max-width:600px){
+  .wrap{padding:0 18px}
+  .nav-inner{height:60px}
+  .brand{font-size:1rem}
+  .brand small{display:block;width:max-content;margin:3px 0 0;font-size:.56rem;padding:3px 7px}
+  .nav .btn-sm{padding:.55em 1em;font-size:.88rem}
+  /* kicker: one flowing line instead of two columns */
+  .kicker{display:block;font-size:.74rem;letter-spacing:.14em;line-height:1.7;margin-bottom:14px;white-space:normal}
+  .kicker::before{display:inline-block;width:26px;vertical-align:middle;margin-right:10px}
+  .kicker span{letter-spacing:.12em}
+  .hero{padding:28px 0 40px}
+  .hero-grid{gap:28px}
+  .hero-h1{font-size:2.65rem}
+  .lead{font-size:1.04rem}
+  .hero-cta .btn{flex:1 1 auto;text-align:center}
+  .hero-art img{border-radius:14px}
+  .section{padding:52px 0}
+  .impact{padding:48px 0}
+  .impact .big-num{font-size:4.6rem}
+  .strip-inner{grid-template-columns:1fr 1fr;gap:18px 16px;padding:24px 18px}
+  .strip b{font-size:1rem}
+  .strip span{font-size:.85rem;line-height:1.4;display:block;margin-top:2px}
+  .cards{gap:12px;margin-top:20px}
+  .card{padding:18px 20px}
+  .steps{gap:12px;margin-top:20px}
+  .steps li{padding:20px;display:grid;grid-template-columns:auto 1fr;column-gap:14px;align-items:start}
+  .steps span{grid-row:span 2;width:34px;height:34px;margin:0}
+  .steps h3{margin:4px 0 .3em}
+  .give{gap:16px;margin-top:22px}
+  .give-item figcaption{padding:18px 20px}
+  .area-list li{font-size:1.05rem;padding:6px 14px}
+  details{padding:14px 16px}
+  .quote-btns{width:100%;max-width:none}
+  .quote-btns .btn{flex:1 1 100%;text-align:center}
+  .contact-lines{display:flex;flex-direction:column;gap:6px;font-size:1.05rem}
+  .contact-lines span{display:none}
+  .contact-lines a{align-self:flex-start}
+  .post{padding:36px 18px 60px}
+  .post h1{font-size:2.1rem}
+  .answer{padding:16px 18px;font-size:1.02rem}
+  /* sticky call / text bar */
+  .callbar{display:flex;gap:10px;position:fixed;left:0;right:0;bottom:0;z-index:20;padding:10px 14px calc(10px + env(safe-area-inset-bottom));background:rgba(250,246,238,.96);backdrop-filter:blur(8px);border-top:1px solid var(--line)}
+  .callbar a{flex:1;text-align:center;padding:.8em 0;font-size:.98rem}
+  body{padding-bottom:76px}
+}
+/* hidden swap words must sit fully below/above the clip so no descender peeks through */
+.swap-word{transform:translateY(160%)}
+.swap-word.is-on{transform:none}
+.swap-word.is-out{transform:translateY(-160%)}
+/* swap word: sit on the text baseline and give the italic room above + below so nothing is clipped */
+.swap{vertical-align:baseline;padding:.16em .14em .24em .18em;margin:-.16em -.14em -.24em -.18em}
+.swap-word{padding:.16em .14em .24em .18em;margin:-.16em -.14em -.24em -.18em}
+@media (max-width:600px){.post .kicker{font-size:.74rem}}
