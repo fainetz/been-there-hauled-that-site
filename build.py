@@ -337,7 +337,9 @@ def build_cities():
         answer, faq, body = city_page(c, AREAS, [o for o in CITIES if o is not c], POSTS)
         body = body.replace("{BYLINE}", BYLINE).replace("{NICE}", nice(more_D)).replace("{TEL}", PHONE_TEL).replace("{PHONE}", PHONE)
         biz = dict(BIZ_FULL, **{"@id": SITE + "/#business"})
-        ld = [{"@context": "https://schema.org", "@type": "Service", "serviceType": "Junk removal", "name": f"Junk removal in {c['city']}, MN",
+        ld = [{"@context": "https://schema.org", "@type": "WebPage", "url": url, "name": f"Junk removal in {c['city']}, MN",
+               "dateModified": more_D, "about": {"@id": SITE + "/#business"}},
+              {"@context": "https://schema.org", "@type": "Service", "serviceType": "Junk removal", "name": f"Junk removal in {c['city']}, MN",
                "url": url, "provider": {"@id": SITE + "/#business"}, "areaServed": {"@type": "City", "name": c["city"] + ", MN"}},
               biz,
               {"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [
@@ -381,6 +383,8 @@ def build():
   <p class="meta">By {BYLINE} · <time datetime="{upd}">{"Updated " if upd != pub else ""}{nice(upd)}</time></p>
   <div class="answer"><b>Short answer:</b> {p['answer']}</div>
   {p['body'].format(areas=AREAS)}
+  <h2>About __NAME__</h2>
+  <p>__NAME__ is a junk removal business based in Eagan, Minnesota, serving {AREAS}. __NAME__ hauls furniture, appliances and cleanouts, donates what's usable, and sends 10–20% of every job to a local homeless shelter <em>or</em> a dog rescue. Text a photo to {PHONE} for an up-front price.</p>
   <h2>Questions people ask</h2>
   {faq_html}
   {sources_html}
